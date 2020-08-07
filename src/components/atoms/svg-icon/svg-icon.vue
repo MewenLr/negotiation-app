@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
-const typeValidator = ['brown', 'white']
+const typeValidator = ['red', 'brown', 'white']
 
 @Component({ name: 'SvgIcon' })
 
@@ -32,9 +32,11 @@ export default class SvgIcon extends Vue {
 
 <style lang="scss">
 .svg-icon {
-  width: 1.25rem;
-  height: 1.25rem;
   overflow: hidden;
+
+  &--red {
+    fill: $red;
+  }
 
   &--brown {
     fill: $stern-brown;

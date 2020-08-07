@@ -4,51 +4,102 @@
       class="home__img-bkgrd"
       source="skyscraper.jpg"
       placeholder="placeholder.png"
+      alt="Illustration of a skyscraper in background"
     />
     <h1 class="home__title">
       Negotiation App
     </h1>
+    <div class="home__temperature">
+      {{ city }}: {{ compTemp }}°C
+    </div>
     <div class="home__card">
-      <button class="home__tab">
-        <svg-icon
-          type="brown"
-          icon="employer"
-          class="home__icon"
-        />
-        <br />
+      <tab
+        type="employer"
+        @clicked="toggleTab('employer')"
+      >
         Employer
-      </button>
-      <button class="home__tab">
-        <svg-icon
-          type="brown"
-          icon="employee"
-          class="home__icon"
-        />
-        <br />
+      </tab>
+      <tab
+        type="employee"
+        @clicked="toggleTab('employee')"
+      >
         Employee
-      </button>
-      <div class="home__form"></div>
+      </tab>
+      <questionnary
+        @check-form="checkForm"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { namespace } from 'vuex-class'
 import { Component, Vue } from 'vue-property-decorator'
-import config from '@/components/pages/home/home.dataset'
+import { TEstimation } from '@/scripts/contracts/types'
+import axance from '@/scripts/modules/axance'
+import Tab from '@/components/molecules/tab/tab.vue'
 import Piction from '@/components/atoms/piction/piction.vue'
-import SvgIcon from '@/components/atoms/svg-icon/svg-icon.vue'
+import Questionnary from '@/components/organisms/questionnary/questionnary.vue'
+
+const ModTab = namespace('ModTab')
+const ModAlertMsg = namespace('ModAlertMsg')
 
 @Component({
   name: 'Home',
   components: {
+    Tab,
     Piction,
-    SvgIcon,
+    Questionnary,
   },
 })
 
 export default class Home extends Vue {
 
-  private card = config.data.card
+  private temp = 0
+  private city = ''
+  private offer: number | null = null
+  private demand: number | null = null
+
+  get compTemp(): number {
+    return Math.round((this.temp - 273.15) * 100) / 100
+  }
+
+  async mounted(): Promise<void> {
+    const { data } = await axance.get(`forecast?q=London&APPID=${process.env.API_KEY}`)
+    this.temp = data?.list?.[0]?.main?.temp
+    this.city = data?.city?.name
+  }
+
+  @ModAlertMsg.Action
+  public actAlertMsg!: (payload: { msg: string; type: string }) => void
+
+  @ModTab.Action
+  public actTabActive!: (payload: string) => void
+
+
+  public checkForm(payload: TEstimation): void {
+    if (payload.demand) this.demand = payload.demand
+    else if (payload.offer) this.offer = payload.offer
+    this.checkEstimation()
+  }
+
+  public toggleTab(tab: string): void {
+    this.actTabActive(tab)
+  }
+
+  public checkEstimation(): void {
+    /* eslint-disable-next-line */
+    if (!this.demand && !this.offer) { /* do nothing */ }
+    else if (this.demand && !this.offer) this.actAlertMsg({ msg: 'Waiting for employer to estimate', type: 'info' })
+    else if (!this.demand && this.offer) this.actAlertMsg({ msg: 'Waiting for employee to estimate', type: 'info' })
+    else if (this.demand && this.offer) {
+      if (this.demand <= this.offer) this.actAlertMsg({ msg: 'Success, you meet an agreement', type: 'success' })
+      else this.actAlertMsg({ msg: 'Failure, you disagree on the price', type: 'fail' })
+      this.offer = null
+      this.demand = null
+    }
+    setTimeout(() => this.actAlertMsg({ msg: '', type: 'success' }), 2500)
+  }
 
 }
 </script>
@@ -72,63 +123,58 @@ export default class Home extends Vue {
   &__title {
     top: 10%;
     left: 50%;
+    width: 100%;
     color: $dim-white;
     position: absolute;
-    font-size: $title-m;
+    text-align: center;
+    font-size: $title-s;
     transform: translate(-50%, -75%);
     text-shadow: 0 0 7px $stern-brown;
+  }
+
+  &__temperature {
+    top: 5px;
+    right: 10px;
+    position: absolute;
   }
 
   &__card {
     top: 50%;
     left: 50%;
     z-index: 1;
-    width: 60%;
+    width: 90%;
     height: 65%;
     display: flex;
     flex-wrap: wrap;
     overflow: hidden;
+    max-width: 800px;
+    max-height: 600px;
     position: absolute;
     border-radius: 5px;
     transform: translate(-50%, -50%);
     background-color: rgba($dim-white, .7);
   }
 
-  &__tab {
-    width: 50%;
-    // height: 50px;
-    padding: 10px;
-    cursor: pointer;
-    border: 1px solid $dim-white;
-    transition: all .2s ease-in-out;
-    background-color: rgba($dim-white, .3);
+  @include tablet {
 
-    &:nth-child(1) {
-      border-radius: 5px 0 0 0;
+    &__title {
+      font-size: $title-m;
     }
 
-    &:nth-child(2) {
-      border-radius: 0 5px 0 0;
-    }
-
-    &:hover {
-      border: 1px solid $stern-brown;
-      background-color: rgba($stern-brown, .2);
-    }
-
-    &:active {
-      background-color: rgba($stern-brown, .5);
+    &__card {
+      width: 75%;
     }
   }
 
-  &__icon {
-    width: 2rem;
-    height: 2rem;
-  }
+  @include laptop {
 
-  &__form {
-    width: 100%;
-    height: calc(100% - 50px);
+    &__title {
+      font-size: $title-l;
+    }
+
+    &__card {
+      width: 60%;
+    }
   }
 }
 </style>

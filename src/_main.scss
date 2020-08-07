@@ -6,8 +6,19 @@ body {
   margin: 0;
 }
 
-div, a, li, h2, h3, h4, button {
+a,
+p,
+li,
+h2,
+h3,
+h4,
+div,
+label,
+input,
+button {
+  color: $stern-brown;
   font-family: 'roboto', 'sans-serif';
+  font-size: $font-m;
 }
 
 a {
@@ -18,6 +29,19 @@ li {
   list-style: none;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   margin: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
 }

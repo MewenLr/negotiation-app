@@ -26,12 +26,8 @@ export default class App extends Vue {
 
 <style lang="scss">
 .app {
-  width: 100vw;
   height: 100vh;
   overflow-x: hidden;
-
-  &--veil {
-    overflow: hidden;
-  }
+  width: 100vw;
 }
 </style>
