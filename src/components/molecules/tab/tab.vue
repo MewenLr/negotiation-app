@@ -36,7 +36,7 @@ export default class Tab extends Vue {
   public stTabActive!: string
 
   public clickBtn(event: MouseEvent | TouchEvent): void {
-    event.preventDefault()
+    if (event) event.preventDefault()
     this.$emit('clicked')
   }
 

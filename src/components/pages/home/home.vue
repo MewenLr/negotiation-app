@@ -25,8 +25,8 @@
       >
         Employee
       </tab>
-      <questionnary
-        @check-form="checkForm"
+      <questionary
+        @checkForm="checkForm"
       />
     </div>
   </div>
@@ -39,7 +39,7 @@ import { TEstimation } from '@/scripts/contracts/types'
 import axance from '@/scripts/modules/axance'
 import Tab from '@/components/molecules/tab/tab.vue'
 import Piction from '@/components/atoms/piction/piction.vue'
-import Questionnary from '@/components/organisms/questionnary/questionnary.vue'
+import Questionary from '@/components/organisms/questionary/questionary.vue'
 
 const ModTab = namespace('ModTab')
 const ModAlertMsg = namespace('ModAlertMsg')
@@ -49,7 +49,7 @@ const ModAlertMsg = namespace('ModAlertMsg')
   components: {
     Tab,
     Piction,
-    Questionnary,
+    Questionary,
   },
 })
 

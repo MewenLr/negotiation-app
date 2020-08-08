@@ -1,17 +1,17 @@
 <template>
   <form
     method="post"
-    class="questionnary"
+    class="questionary"
     @submit="checkForm($event)"
   >
 
     <div
       v-show="stAlertMsg.msg"
-      class="questionnary__alert-msg"
-      :class="`questionnary__alert-msg--${stAlertMsg.type}`"
+      class="questionary__alert-msg"
+      :class="`questionary__alert-msg--${stAlertMsg.type}`"
     >
       <svg-icon
-        class="questionnary__alert-icon"
+        class="questionary__alert-icon"
         :icon="stAlertMsg.type"
         :type="stAlertMsg.type === 'fail' ? 'white' : 'brown'"
       />
@@ -19,12 +19,12 @@
     </div>
 
     <div
-      class="questionnary__group"
+      class="questionary__group"
       v-show="stTabActive === 'employer'"
     >
       <label
         for="offer"
-        class="questionnary__label"
+        class="questionary__label"
       >
         Employer offer&nbsp;:
       </label>
@@ -33,17 +33,17 @@
         name="offer"
         type="number"
         v-model="offer"
-        class="questionnary__input"
+        class="questionary__input"
       >
     </div>
 
     <div
-      class="questionnary__group"
+      class="questionary__group"
       v-show="stTabActive === 'employee'"
     >
       <label
         for="demand"
-        class="questionnary__label"
+        class="questionary__label"
       >
         Employee demand&nbsp;:
       </label>
@@ -52,18 +52,18 @@
         name="demand"
         type="number"
         v-model="demand"
-        class="questionnary__input"
+        class="questionary__input"
       >
     </div>
 
     <div
-      class="questionnary__warning"
+      class="questionary__warning"
       v-show="warning"
     >
       <svg-icon
         type="red"
         icon="warning"
-        class="questionnary__icon"
+        class="questionary__icon"
       />
       {{ warning }}
     </div>
@@ -71,7 +71,7 @@
     <input
       type="submit"
       value="Submit"
-      class="questionnary__submit"
+      class="questionary__submit"
     >
   </form>
 </template>
@@ -85,13 +85,13 @@ const ModTab = namespace('ModTab')
 const ModAlertMsg = namespace('ModAlertMsg')
 
 @Component({
-  name: 'Questionnary',
+  name: 'Questionary',
   components: {
     SvgIcon,
   },
 })
 
-export default class Questionnary extends Vue {
+export default class Questionary extends Vue {
 
   private warning: string | null = null
   private offer: number | string | null = null
@@ -104,17 +104,11 @@ export default class Questionnary extends Vue {
   public stTabActive!: string
 
   public checkForm(event: MouseEvent | TouchEvent): void {
-    event.preventDefault()
+    if (event) event.preventDefault()
 
-    this.offer = this.offer ? +this.offer : null
-    this.demand = this.demand ? +this.demand : null
-
-    if (typeof this.offer === 'number' || typeof this.demand === 'number') {
-      let payload
-      if (this.stTabActive === 'employee') payload = { demand: this.demand }
-      else payload = { offer: this.offer }
-      this.$emit('check-form', payload)
-    } else {
+    if (this.offer) this.$emit('checkForm', { offer: +this.offer })
+    else if (this.demand) this.$emit('checkForm', { demand: +this.demand })
+    else {
       this.warning = 'The estimation must be a number.'
       setTimeout(() => this.warning = '', 2000)
     }
@@ -127,7 +121,7 @@ export default class Questionnary extends Vue {
 </script>
 
 <style lang="scss">
-.questionnary {
+.questionary {
   width: 100%;
   height: 82%;
   display: flex;
