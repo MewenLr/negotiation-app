@@ -1,6 +1,6 @@
 export default {
   props: {
-    icon: 'placeholder',
-    type: 'primary',
+    type: 'brown',
+    icon: 'success',
   },
 }

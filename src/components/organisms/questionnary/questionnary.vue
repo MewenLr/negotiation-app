@@ -93,9 +93,9 @@ const ModAlertMsg = namespace('ModAlertMsg')
 
 export default class Questionnary extends Vue {
 
+  private warning: string | null = null
   private offer: number | string | null = null
   private demand: number | string | null = null
-  private warning: string | null = null
 
   @ModAlertMsg.State
   public stAlertMsg!: string

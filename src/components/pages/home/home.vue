@@ -76,17 +76,6 @@ export default class Home extends Vue {
   @ModTab.Action
   public actTabActive!: (payload: string) => void
 
-
-  public checkForm(payload: TEstimation): void {
-    if (payload.demand) this.demand = payload.demand
-    else if (payload.offer) this.offer = payload.offer
-    this.checkEstimation()
-  }
-
-  public toggleTab(tab: string): void {
-    this.actTabActive(tab)
-  }
-
   public checkEstimation(): void {
     /* eslint-disable-next-line */
     if (!this.demand && !this.offer) { /* do nothing */ }
@@ -99,6 +88,16 @@ export default class Home extends Vue {
       this.demand = null
     }
     setTimeout(() => this.actAlertMsg({ msg: '', type: 'success' }), 2500)
+  }
+
+  public checkForm(payload: TEstimation): void {
+    if (payload.demand) this.demand = payload.demand
+    else if (payload.offer) this.offer = payload.offer
+    this.checkEstimation()
+  }
+
+  public toggleTab(tab: string): void {
+    this.actTabActive(tab)
   }
 
 }
