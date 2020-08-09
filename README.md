@@ -1,12 +1,12 @@
-# Negotiation App
+# Negotiation App #
 
-**time spent**
-preparation: 1h
-development: 2h
+**time spent**\
+preparation: 1h\
+development: 2h\
 test: 1h
 
-**version**
-npm: 6.14
+**version**\
+npm: 6.14\
 node: 12.16
 
 **install**
